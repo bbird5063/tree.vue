@@ -1,8 +1,8 @@
 <template>
-	<div>
+	<div class="main">
 		Наше дерево:
 		<ul class="Container" id="tree">
-			<li class="Node IsRoot IsLast ExpandClosed">
+			<li @click="tree" class="Node IsRoot IsLast ExpandClosed">
 				<div class="Expand"></div>
 				<div class="Content">Каталог</div>
 				<ul class="Container">
@@ -28,53 +28,53 @@ export default {
 		return {
 			ulTree: '',
 			node: '',
+			url: '/php_modules/kantor/data.php',
 		}
 	},
 
 	methods: {
 
-		tree(id, url) {
-			var element = document.getElementById(id);
+		tree(event) {
+			//let element = document.getElementById(id);
 
-			console.log(element);
+			//element.onclick = function (event) {
+			event = event || window.event
+			let clickedElem = event.target || event.srcElement
 
-			element.onclick = function (event) {
-				event = event || window.event
-				var clickedElem = event.target || event.srcElement
+			console.log(clickedElem); // при загрузке undefined
 
-				console.log(clickedElem);
-
-				if (!this.hasClass(clickedElem, 'Expand')) {
-					return // клик не там
-				}
-
-				// Node, на который кликнули var 
-				this.node = clickedElem.parentNode
-				if (this.hasClass(this.node, 'ExpandLeaf')) {
-					return // клик на листе
-				}
-
-				if (this.node.isLoaded || this.node.getElementsByTagName('LI').length) {
-					// Узел уже загружен через AJAX(возможно он пуст)
-					this.toggleNode(this.node)
-					return
-				}
-
-				if (this.node.getElementsByTagName('LI').length) {
-					// Узел не был загружен при помощи AJAX, но у него почему-то есть потомки
-					// Например, эти узлы были в DOM дерева до вызова tree()
-					// Как правило, это "структурные" узлы
-					// ничего подгружать не надо
-					this.toggleNode(this.node)
-					return
-				}
-
-				// загрузить узел
-				this.load(this.node)
+			if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) { // BB: '!clickedElem ||' потому что при загрузке: clickedElem==undefined
+				return // клик не там
 			}
+
+			// Node, на который кликнули (BB: было 'let node = ...')
+			this.node = clickedElem.parentNode
+			if (this.hasClass(this.node, 'ExpandLeaf')) {
+				return // клик на листе
+			}
+
+			if (this.node.isLoaded || this.node.getElementsByTagName('LI').length) {
+				// Узел уже загружен через AJAX(возможно он пуст)
+				this.toggleNode(this.node)
+				return
+			}
+
+			if (this.node.getElementsByTagName('LI').length) {
+				// Узел не был загружен при помощи AJAX, но у него почему-то есть потомки
+				// Например, эти узлы были в DOM дерева до вызова tree()
+				// Как правило, это "структурные" узлы
+				// ничего подгружать не надо
+				this.toggleNode(this.node)
+				return
+			}
+
+			// загрузить узел
+			this.load(this.node)
+			//}
 		},
 
 		hasClass(elem, className) {
+			console.log(elem, elem.className);
 			return new RegExp("(^|\\s)" + className + "(\\s|$)").test(elem.className)
 		},
 
@@ -93,6 +93,7 @@ export default {
 		},
 
 		onSuccess(data) {
+			console.log(data);
 			if (!data.errcode) {
 				this.onLoaded(data)
 				this.showLoading(false)
@@ -142,11 +143,11 @@ export default {
 			alert(msg)
 		},
 
-		load(node) {
+		load_OLD(node) {
 			this.showLoading(true)
 
 			$.ajax({
-				url: url,
+				url: this.url,
 				data: this.node.id,
 				dataType: "json",
 				success: this.onSuccess,
@@ -154,6 +155,26 @@ export default {
 				cache: false
 			})
 		},
+
+		async load(node) {
+			try {
+				this.showLoading(true)
+				const response = await axios.get(this.url, { params: { id: this.node.id } });
+				//this.ulTree = response.data.get;
+				let data =  response.data.map(x => JSON.parse(x));
+				console.log(data);
+				data && this.onLoaded(data); // 
+				
+				//this.showLoading(false)
+			} catch (e) {
+				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
+			} finally {
+				this.showLoading(false);
+			}
+		}
+
+
+
 	},
 
 	mounted() {
@@ -165,6 +186,10 @@ export default {
 </script>
 
 <style>
+.main {
+	text-align: left;
+}
+
 .Container {
 	padding: 0;
 	margin: 0;
