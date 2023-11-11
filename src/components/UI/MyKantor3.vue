@@ -68,7 +68,7 @@
 				
 				// загрузить узел
 				this.load(this.node)
-				//this.nextLevelTree();
+				this.nextLevelTree();
 			},
 			
 			hasClass(elem, className) {
@@ -131,7 +131,7 @@
 		},
 		
 		mounted() {
-			//this.currentTree = this.sourceTree;
+			this.currentTree = this.sourceTree;
 			this.tree();
 		},
 		
