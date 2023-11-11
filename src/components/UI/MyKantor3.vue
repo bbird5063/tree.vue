@@ -91,7 +91,7 @@ export default {
 			var expand = this.node.getElementsByTagName('DIV')[0]
 			expand.className = on ? 'ExpandLoading' : 'Expand'
 		},
-
+/*
 		onSuccess(data) {
 			console.log(data);
 			if (!data.errcode) {
@@ -115,7 +115,7 @@ export default {
 			}
 			this.onLoadError(errinfo)
 		},
-
+*/
 		onLoaded(data) {
 
 			for (var i = 0; i < data.length; i++) {
@@ -142,7 +142,7 @@ export default {
 			if (error.message) msg = msg + ' :' + error.message
 			alert(msg)
 		},
-
+/*
 		load_OLD(node) {
 			this.showLoading(true)
 
@@ -155,30 +155,23 @@ export default {
 				cache: false
 			})
 		},
-
+*/
 		async load(node) {
 			try {
 				this.showLoading(true)
 				const response = await axios.get(this.url, { params: { id: this.node.id } });
-				//this.ulTree = response.data.get;
-				let data =  response.data.map(x => JSON.parse(x));
-				console.log(data);
-				data && this.onLoaded(data); // 
-				
-				//this.showLoading(false)
+				response.data && this.onLoaded(response.data);
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {
 				this.showLoading(false);
 			}
 		}
-
-
-
 	},
 
 	mounted() {
-		this.tree("tree", "/php_modules/kantor/data.php");
+		// this.tree("tree", "/php_modules/kantor/data.php");
+		this.tree();
 	},
 
 

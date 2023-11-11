@@ -12,4 +12,4 @@ let arr0 = [1, 2, 3]
 //let str2 = JSON.stringify(str1);
 let arr2 = arr1.map(x => JSON.parse(x));
 
-console.log(typeof arr2);
+console.log(arr2);
