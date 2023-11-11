@@ -36,12 +36,13 @@
 		methods: {
 		
 			tree(event) {
+				if(!event) return; // при обновлении страницы
 				event = event || window.event
 				let clickedElem = event.target || event.srcElement
 				
 				console.log(clickedElem); // при загрузке undefined
 				
-				if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) { // BB: '!clickedElem ||' потому что при загрузке: clickedElem==undefined
+				if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) {
 					return // клик не там или при обновлении страницы
 				}
 				
@@ -68,7 +69,6 @@
 				
 				// загрузить узел
 				this.load(this.node)
-				this.nextLevelTree();
 			},
 			
 			hasClass(elem, className) {
@@ -115,6 +115,8 @@
 					this.showLoading(true)
 					const response = await axios.get(this.url, { params: { id: this.node.id } });
 					response.data && this.onLoaded(response.data);
+					this.nextLevelTree();
+
 					} catch (e) {
 					alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 					} finally {
