@@ -142,7 +142,7 @@ function al(msg) {
 </script>
 
 
-<style> /*  scoped убрал - иначе т.к. это компонент эти не работают */
+<style scoped> /*  scoped убрал - иначе т.к. это компонент эти не работают */
 
  #periodTree {
  	text-align: left;

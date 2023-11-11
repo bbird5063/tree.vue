@@ -76,7 +76,7 @@ for ($credit = 1; $credit >= 0; --$credit) {
 			$strTree .= '<div class="Expand"></div>';
 			$strTree .= '<div class="Content" role="tree' . $credit . '" for="DiaryBookPayment.ID_TypePayment=' . $arrFields['ID_TypePayment'] . '" style="cursor:pointer">' . $arrFields['NameTypePayment']  . '</div>';
 			$strTree .= '</li>';
-		}
+		} //
 	}
 	$strTree .= '</ul>';
 	$strTree .= '</li>';

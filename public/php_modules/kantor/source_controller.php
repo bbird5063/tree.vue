@@ -32,7 +32,7 @@ if (!defined('BBR_KEY')) {
 require_once 'mysql.php';
 $data['get'] = $_GET;
 
-$_SESSION['db_connect']->close();
+//$_SESSION['db_connect']->close();
 
 
 echo json_encode($data);

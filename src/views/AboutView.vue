@@ -2,7 +2,7 @@
 	<div class="about">
 		<h1>This is an about page</h1>
 		<!--<my-tree :srcTree="srcTree"></my-tree>-->
-		<my-kantor2 :sourceTree="sourceTree"></my-kantor2>
+		<my-kantor3 :sourceTree="sourceTree"></my-kantor3>
 	</div>
 </template>
 
