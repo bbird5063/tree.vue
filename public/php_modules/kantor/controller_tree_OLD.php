@@ -1,6 +1,9 @@
 <?php
 if (!empty($_GET))
 	require_once 'require_ajax.php';
+
+/* Заменяем $ok т.к. в variables.php: $ok = !empty($_POST['ok'])?true:false; , 
+а в Ajax и "<button name="ok"...":	$_POST['ok'] не передается */
 $ok = !empty($_GET) ? true : false;
 
 

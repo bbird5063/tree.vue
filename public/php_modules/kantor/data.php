@@ -7,15 +7,13 @@
 	for($i=0;$i<3;$i++) {
 		$id++;
 		$isFolder = rand(1,3) == 1 ? 0 : 1;
-		// $node[] = "{ id: $id, title: 'Node $id', isFolder: $isFolder}";
 		
-		$li=[]; // BB: заменил $node[]
+		$li=[];
 		$li['id']=$id;
 		$li['title']="Node $id";
 		$li['isFolder']=$isFolder;
 		$data[]=$li;
 	}
 	
-	// echo '['.implode(',',$node).']';
 	echo json_encode($data);
 ?>
