@@ -1,3 +1,5 @@
+//import { slice } from "core-js/core/array";
+
 sourceTree = {
 	nameTable: 'credit',
 	idField: 'Credit',
@@ -16,13 +18,21 @@ sourceTree = {
 		}
 	}
 }
-sourceTree.id = 11111;
-console.log(sourceTree);
-console.log('-----------------------');
-sourceTree = sourceTree.childTable;
-sourceTree.id = 22222;
-console.log(sourceTree);
-console.log('-----------------------');
-sourceTree = sourceTree.childTable;
-sourceTree.id = 33333;
-console.log(sourceTree);
+
+//sourceTree.id = 11111;
+//console.log(sourceTree);
+//console.log('-----------------------');
+//sourceTree = sourceTree.childTable;
+//sourceTree.id = 22222;
+//console.log(sourceTree);
+//console.log('-----------------------');
+//sourceTree = sourceTree.childTable;
+//sourceTree.id = 33333;
+//console.log(sourceTree);
+
+let test = 'ID_TypePayment-12';
+//let pos = test.indexOf('=');
+//console.log(pos);
+//let test2 = test.slice(0, pos);
+let test2 = test.slice(0, test.indexOf('-'));
+console.log(test2);

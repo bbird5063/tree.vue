@@ -2,7 +2,7 @@
 	<div class="main">
 		Наше дерево:
 		<ul class="Container" id="tree">
-			<li @click="tree" class="Node IsRoot IsLast ExpandClosed">
+			<li id="root-" @click="tree" class="Node IsRoot IsLast ExpandClosed">
 				<div class="Expand"></div>
 				<div class="Content">Каталог</div>
 				<ul class="Container">
@@ -41,13 +41,13 @@ export default {
 
 			console.log(clickedElem); // при загрузке undefined
 
-			if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) {
+			if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) { // 'Expand'-квадратик (+/-)
 				return // клик не там или при обновлении страницы
 			}
 
 			// Node, на который кликнули (BB: было 'let node = ...')
-			this.node = clickedElem.parentNode
-			if (this.hasClass(this.node, 'ExpandLeaf')) {
+			this.node = clickedElem.parentNode // <li> она parentNode для <div>(+/-)
+			if (this.hasClass(this.node, 'ExpandLeaf')) {  // 'ExpandLeaf' - узел без квадратика (лист, ссылка-не папка)
 				return // клик на листе
 			}
 
@@ -67,6 +67,7 @@ export default {
 			}
 
 			// загрузить узел
+			this.nextLevelTree(this.node);
 			this.load(this.node)
 		},
 
@@ -117,7 +118,7 @@ export default {
 				console.log('----response.data OLD-----------');
 				console.log(response.data);
 				response.data && this.onLoaded(response.data);
-				this.nextLevelTree();
+				//this.nextLevelTree();
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {
@@ -135,7 +136,7 @@ export default {
 				console.log('----SQL-----------');
 				console.log(response.data.sql);
 				response.data && this.onLoaded(response.data.tree);
-				this.nextLevelTree(this.node.id);
+				//this.nextLevelTree(this.node.id);
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {
@@ -143,12 +144,18 @@ export default {
 			}
 		},
 
-		nextLevelTree(id) {
-			if (this.currentTree.childTable) {
+		nextLevelTree(node) {
+			let ID_Table = node.id.slice(0, node.id.indexOf('-'));
+			console.log('ID_Table: ' + ID_Table);
+			this.currentTree = this.sourceTree;
+			if (ID_Table == 'root') return;
+			while (true) {
+				if (!this.currentTree.childTable) return;
+				if (this.currentTree.idField === ID_Table) {
+					this.currentTree = this.currentTree.childTable;
+					return;
+				}
 				this.currentTree = this.currentTree.childTable;
-				this.currentTree.id = id;
-				console.log('----currentTree------------------');
-				console.log(this.currentTree);
 			}
 		},
 	},
