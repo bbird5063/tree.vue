@@ -19,7 +19,7 @@ $nameField = $arrTables['nameField'];
 $indexField = $arrTables['indexField'];
 $childTable = isset($arrTables['childTable']) ? $arrTables['childTable']['nameTable'] : '';
 $childTableID = isset($arrTables['childTable']) ? $arrTables['childTable']['idField'] : '';
-$where = isset($arrTables['id']) ? ' WHERE ' . str_replace('-', '=', $arrTables['id']) : '';
+$where = isset($arrTables['id']) ? 'WHERE ' . str_replace('-', '=', $arrTables['id']) : '';
 
 $sql = "SELECT * FROM $nameTable $where ORDER BY $indexField;";
 

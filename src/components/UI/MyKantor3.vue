@@ -27,19 +27,14 @@ export default {
 		return {
 			currentTree: {},
 			node: {},
-			urlOld: '/php_modules/kantor/data.php',
-			url: '/php_modules/kantor/controller_tree.php',
 		}
 	},
 
 	methods: {
-
 		tree(event) {
 			if (!event) return; // при обновлении страницы event.target->error
 			event = event || window.event
 			let clickedElem = event.target || event.srcElement
-
-			console.log(clickedElem); // при загрузке undefined
 
 			if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) { // 'Expand'-квадратик (+/-)
 				return // клик не там или при обновлении страницы
@@ -52,13 +47,13 @@ export default {
 			}
 
 			if (this.node.isLoaded || this.node.getElementsByTagName('LI').length) {
-				// Узел уже загружен через AJAX(возможно он пуст)
+				// Узел уже загружен через axios(возможно он пуст)
 				this.toggleNode(this.node)
 				return
 			}
 
 			if (this.node.getElementsByTagName('LI').length) {
-				// Узел не был загружен при помощи AJAX, но у него почему-то есть потомки
+				// Узел не был загружен при помощи axios, но у него почему-то есть потомки
 				// Например, эти узлы были в DOM дерева до вызова tree()
 				// Как правило, это "структурные" узлы
 				// ничего подгружать не надо
@@ -68,11 +63,12 @@ export default {
 
 			// загрузить узел
 			this.nextLevelTree(this.node);
+			console.log('----currentTree----');
+			console.table(this.currentTree);
 			this.load(this.node)
 		},
 
 		hasClass(elem, className) {
-			console.log(elem, elem.className);
 			return new RegExp("(^|\\s)" + className + "(\\s|$)").test(elem.className)
 		},
 
@@ -110,33 +106,14 @@ export default {
 			this.toggleNode(this.node)
 		},
 
-		async load_OLD(node) {
-			try {
-				this.showLoading(true)
-				!this.currentTree && alert('currentTree пустой!');
-				const response = await axios.get(this.urlOld, { params: { id: this.node.id } });
-				console.log('----response.data OLD-----------');
-				console.log(response.data);
-				response.data && this.onLoaded(response.data);
-				//this.nextLevelTree();
-			} catch (e) {
-				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
-			} finally {
-				this.showLoading(false);
-			}
-		},
-
 		async load(node) {
 			try {
 				this.showLoading(true)
-				!this.currentTree && alert('currentTree пустой!');
-				const response = await axios.get(this.url, { params: this.currentTree });
-				console.log('----response.data NEW-----------');
-				console.log(response.data);
+				const url = '/php_modules/kantor/controller_tree.php';
+				const response = await axios.get(url, { params: this.currentTree });
 				console.log('----SQL-----------');
 				console.log(response.data.sql);
 				response.data && this.onLoaded(response.data.tree);
-				//this.nextLevelTree(this.node.id);
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {
@@ -146,13 +123,16 @@ export default {
 
 		nextLevelTree(node) {
 			let ID_Table = node.id.slice(0, node.id.indexOf('-'));
-			console.log('ID_Table: ' + ID_Table);
 			this.currentTree = this.sourceTree;
 			if (ID_Table == 'root') return;
 			while (true) {
-				if (!this.currentTree.childTable) return;
+				if (!this.currentTree.childTable) {
+					this.currentTree.id = node.id;
+					return;
+				}
 				if (this.currentTree.idField === ID_Table) {
 					this.currentTree = this.currentTree.childTable;
+					this.currentTree.id = node.id;
 					return;
 				}
 				this.currentTree = this.currentTree.childTable;
@@ -164,8 +144,6 @@ export default {
 		this.currentTree = this.sourceTree;
 		this.tree();
 	},
-
-
 }
 </script>
 
@@ -184,7 +162,6 @@ export default {
 .Container li {
 	list-style-type: none;
 }
-
 
 /* indent for all tree children excepts root */
 .Node {
