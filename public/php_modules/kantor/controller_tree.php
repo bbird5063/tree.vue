@@ -1,89 +1,49 @@
 <?php
-if (!empty($_GET))
-	require_once 'require_ajax.php';
-$ok = !empty($_GET) ? true : false;
 
+require 'require_ajax.php';
+require_once 'mysql.php';
 
-$data['get'] = $_GET;
-//$sourceTree = $_GET;
+function aboveZero($table, $field, $value)
+{
+	require_once 'mysql.php';
+	$sql = "SELECT COUNT(*) AS count FROM $table WHERE $field = $value;";
+	$result = mysqlQuery($sql);
+	$row = $result->fetch_array(MYSQLI_ASSOC);
+	return $row["count"] > 0 ? 1 : 0;
+}
+
+$arrTables = $_GET;
+$nameTable = $arrTables['nameTable'];
+$idField = $arrTables['idField'];
+$nameField = $arrTables['nameField'];
+$indexField = $arrTables['indexField'];
+$childTable = isset($arrTables['childTable']) ? $arrTables['childTable']['nameTable'] : '';
+$childTableID = isset($arrTables['childTable']) ? $arrTables['childTable']['idField'] : '';
+$where = isset($arrTables['id']) ? ' WHERE ' . str_replace('-', '=', $arrTables['id']) : '';
+
+$sql = "SELECT * FROM $nameTable $where ORDER BY $indexField;";
+
+$data['sql'] = $sql;
 
 require_once 'mysql.php';
 
-$strTree = '';
-
-function loadTree($arrTables, $parentID)
-{
-	require_once 'mysql.php';
-
-	static $strTree = '';
-
-	$strWhere = $parentID ? " WHERE " . $arrTables['idField'] . "=" .  $parentID : "";
-
-	$sql = "
-	SELECT " . $arrTables['idField'] . ", " . $arrTables['nameField'] . "
-	FROM " . $arrTables['nameTable'] .
-		$strWhere . "
-	ORDER BY " . $arrTables['indexField'] . ";
-	";
-
-	$result = mysqlQuery($sql);
-	if (!$result) {
-		die("Database access failed: " . $conn->error);
-		$data['sqlError'] = "Database access failed: " . $conn->error;
-	} else {
-	}
-
-
-
+$result = mysqlQuery($sql);
+if (!$result) {
+	die("Database access failed: " . $_SESSION['db_connect']->error);
+	$data['sqlError'] = "Database access failed: " . $_SESSION['db_connect']->error;
+} else {
 	$rows = $result->num_rows;
-
-	if ($parentID) { // не первый
-		$strTree .= '<li class="Node IsLast ExpandClosed">';
-		$strTree .= '<div class="Expand"></div>';
-		$strTree .= '<div class="Content" role="tree" for="all" style="cursor:pointer">Все</div>';
-		$strTree .= '<ul class="Container">';
-	}
-
-
 	for ($j = 0; $j < $rows; ++$j) {
 		$result->data_seek($j);
 		$arrFields = $result->fetch_array(MYSQLI_ASSOC);
 
-		if ($j == $rows - 1) {
-			$strTree .= '<li class="Node ExpandLeaf IsLast">';
-		} else {
-			$strTree .= '<li class="Node ExpandLeaf">';
-		}
+		$li = [];
+		$li['id'] = $idField . '-' . $arrFields[$idField];
+		$li['title'] = $arrFields[$nameField];
+		$li['isFolder'] = isset($arrTables['childTable']) ? aboveZero($childTable, $idField, $arrFields[$idField]) : 0;
 
-
-		//$strTree .= '<li class="Node ExpandLeaf">';
-		$strTree .= '<div class="Expand"></div>';
-		$strTree .= '<div class="Content" role="tree" for="DiaryBookPayment.' . $arrTables['idField'] . '=' . $arrFields[$arrTables['idField']] . '" style="cursor:pointer">' . $arrFields[$arrTables['nameField']]  . '</div>';
-		$strTree .= '</li>';
-	} //
-
-
-
-
-
-
-
-	if ($parentID) { // не первый
-		$strTree .= '</ul>';
-	}
-
-	if (isset($arrTables['childTable'])) {
-		return $strTree .= loadTree($arrTables['childTable'], $arrTables['idField']);
-	} else {
-		return $strTree;
+		$data['tree'][] = $li;
 	}
 }
-
-$data['get'] = loadTree($_GET, 0);
-//$data['get'] = 'ПРОБА!';
-//$data['get'] = $arrTables;
-
-//$_SESSION['db_connect']->close();
-
 
 echo json_encode($data);
