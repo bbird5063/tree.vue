@@ -1,10 +1,10 @@
 <template>
 	<div class="main">
-		{{ treeNames.treeTitle }}
+		{{ treeHtmlCss.treeTitle }}
 		<ul class="Container" id="tree">
 			<li id="root-" @click="tree" class="Node IsRoot IsLast ExpandClosed">
 				<div class="Expand"></div>
-				<div id="rootName" class="Content">{{ treeNames.rootName }}</div>
+				<div id="rootName" class="Content">{{ treeHtmlCss.rootName }}</div>
 				<ul class="Container">
 				</ul>
 			</li>
@@ -17,11 +17,11 @@ import axios from 'axios';
 export default {
 	name: 'my-kantor3',
 	props: {
-		sourceTree: {
+		treeHtmlCss: {
 			type: Object,
 			required: true,
 		},
-		treeNames: {
+		sourceTree: {
 			type: Object,
 			required: true,
 		},
@@ -44,9 +44,15 @@ export default {
 				if (this.hasClass(clickedElem, 'Content')) {
 					let elems = document.querySelectorAll('.Content');
 					for (let elem of elems) {
-						elem.style.fontWeight = 100;
+						if (this.treeHtmlCss.activeBold) elem.style.fontWeight = 100;
+						if (this.treeHtmlCss.activeColor) elem.style.color = 'black';
+						if (this.treeHtmlCss.activeUnderline) elem.style.textDecoration = 'none';
 					}
-					if (clickedElem.id !== 'rootName') clickedElem.style.fontWeight = 700;
+					if (clickedElem.id !== 'rootName') {
+						if (this.treeHtmlCss.activeBold) clickedElem.style.fontWeight = 700;
+						if (this.treeHtmlCss.activeColor) clickedElem.style.color = this.treeHtmlCss.activeColor;
+						if (this.treeHtmlCss.activeUnderline) clickedElem.style.textDecoration = 'underline';
+					}
 				}
 				return // клик не там или при обновлении страницы
 			}
@@ -154,12 +160,13 @@ export default {
 
 	mounted() {
 		this.currentTree = this.sourceTree;
-		this.tree();
+		//this.tree();
 	},
 }
 </script>
 
 <style>
+/* 'scoped' не ставить*/
 .main {
 	text-align: left;
 }
@@ -223,7 +230,6 @@ export default {
 	height: 18px;
 	float: left;
 }
-
 
 .ExpandOpen .Container {
 	display: block;

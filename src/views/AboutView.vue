@@ -2,7 +2,7 @@
 	<div class="about">
 		<h1>This is an about page</h1>
 		<!--<my-tree :srcTree="srcTree"></my-tree>-->
-		<my-kantor3 :treeNames="treeNames" :sourceTree="sourceTree"></my-kantor3>
+		<my-kantor3 :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree"></my-kantor3>
 	</div>
 </template>
 
@@ -10,9 +10,12 @@
 export default {
 	data() {
 		return {
-			treeNames: {
+			treeHtmlCss: {
 				treeTitle: 'Период',
 				rootName: 'Все',
+				activeColor: 'blue',
+				activeBold: true,
+				activeUnderline: true,
 			},
 			sourceTree: {
 				nameTable: 'credit',
