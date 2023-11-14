@@ -19,7 +19,8 @@ $nameField = $arrTables['nameField'];
 $indexField = $arrTables['indexField'];
 $childTable = isset($arrTables['childTable']) ? $arrTables['childTable']['nameTable'] : '';
 $childTableID = isset($arrTables['childTable']) ? $arrTables['childTable']['idField'] : '';
-$where = isset($arrTables['id']) ? 'WHERE ' . str_replace('-', '=', $arrTables['id']) : '';
+//$where = isset($arrTables['id']) ? 'WHERE ' . str_replace('-', '=', $arrTables['id']) : '';
+$where = isset($arrTables['id']) ? 'WHERE ' . $arrTables['id'] : '';
 
 $sql = "SELECT * FROM $nameTable $where ORDER BY $indexField;";
 
@@ -38,7 +39,8 @@ if (!$result) {
 		$arrFields = $result->fetch_array(MYSQLI_ASSOC);
 
 		$li = [];
-		$li['id'] = $idField . '-' . $arrFields[$idField];
+		//$li['id'] = $idField . '-' . $arrFields[$idField];
+		$li['id'] = $idField . '=' . $arrFields[$idField];
 		$li['title'] = $arrFields[$nameField];
 		$li['isFolder'] = isset($arrTables['childTable']) ? aboveZero($childTable, $idField, $arrFields[$idField]) : 0;
 

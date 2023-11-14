@@ -1,10 +1,10 @@
 <template>
 	<div class="main">
-		Наше дерево:
+		{{ treeNames.treeTitle }}
 		<ul class="Container" id="tree">
 			<li id="root-" @click="tree" class="Node IsRoot IsLast ExpandClosed">
 				<div class="Expand"></div>
-				<div class="Content">Каталог</div>
+				<div id="rootName" class="Content">{{ treeNames.rootName }}</div>
 				<ul class="Container">
 				</ul>
 			</li>
@@ -18,6 +18,10 @@ export default {
 	name: 'my-kantor3',
 	props: {
 		sourceTree: {
+			type: Object,
+			required: true,
+		},
+		treeNames: {
 			type: Object,
 			required: true,
 		},
@@ -37,6 +41,13 @@ export default {
 			let clickedElem = event.target || event.srcElement
 
 			if (!clickedElem || !this.hasClass(clickedElem, 'Expand')) { // 'Expand'-квадратик (+/-)
+				if (this.hasClass(clickedElem, 'Content')) {
+					let elems = document.querySelectorAll('.Content');
+					for (let elem of elems) {
+						elem.style.fontWeight = 100;
+					}
+					if (clickedElem.id !== 'rootName') clickedElem.style.fontWeight = 700;
+				}
 				return // клик не там или при обновлении страницы
 			}
 
@@ -122,7 +133,8 @@ export default {
 		},
 
 		nextLevelTree(node) {
-			let ID_Table = node.id.slice(0, node.id.indexOf('-'));
+			//let ID_Table = node.id.slice(0, node.id.indexOf('-'));
+			let ID_Table = node.id.slice(0, node.id.indexOf('='));
 			this.currentTree = this.sourceTree;
 			if (ID_Table == 'root') return;
 			while (true) {
@@ -222,7 +234,9 @@ export default {
 }
 
 .ExpandOpen .Expand,
-.ExpandClosed .Expand {
+.ExpandClosed .Expand,
+.Content {
+	/*BB:.Content*/
 	cursor: pointer;
 }
 
@@ -235,5 +249,9 @@ export default {
 	height: 18px;
 	float: left;
 	background-image: url('~@/assets/img/tree/expand_loading.gif');
+}
+
+#rootName {
+	cursor: default;
 }
 </style>
