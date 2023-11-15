@@ -1,13 +1,16 @@
 <template>
 	<div class="about">
-		<h1>This is an about page</h1>
-		<!--<my-tree :srcTree="srcTree"></my-tree>-->
-		<my-kantor3 :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree"></my-kantor3>
+		<h1>This is an tree page</h1>
+		<tree-catalog :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree"></tree-catalog>
 	</div>
 </template>
 
 <script>
+import TreeCatalog from '@/components/TreeCatalog';
 export default {
+	components: {
+		TreeCatalog,
+	},
 	data() {
 		return {
 			treeHtmlCss: {

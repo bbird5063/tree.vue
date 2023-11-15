@@ -1,6 +1,6 @@
-import MyTree from '@/components/UI/MyTree';
-import MyKantor from '@/components/UI/MyKantor';
-import MyKantor2 from '@/components/UI/MyKantor2';
-import MyKantor3 from '@/components/UI/MyKantor3';
+import MyButton from '@/components/UI/MyButton';
+import MyInput from '@/components/UI/MyInput';
+import MyDialog from '@/components/UI/MyDialog';
+import MySelect from '@/components/UI/MySelect';
 
-export default [MyTree, MyKantor, MyKantor2, MyKantor3];
+export default [MyButton, MyInput, MyDialog, MySelect];

@@ -15,7 +15,6 @@
 <script>
 import axios from 'axios';
 export default {
-	name: 'my-kantor3',
 	props: {
 		treeHtmlCss: {
 			type: Object,
