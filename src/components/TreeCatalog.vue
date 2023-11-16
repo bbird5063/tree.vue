@@ -148,8 +148,17 @@ export default {
 				const url = '/php_modules/kantor/controller_content.php';
 				const response = await axios.get(url, { params: this.buildSQL(id) });
 				console.log('----SQL-----------');
-				console.log(response.data.sql);
+				if (response.data.errorDB) {
+					alert(response.data.errorDB);
+				}
+				else {
+					console.log(response.data.rowsContent);
+					this.$emit('loadContent', response.data.rowsContent);
+				}
+				console.log(response.data);
+
 				//response.data && this.onLoaded(response.data.tree);
+
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {

@@ -32,7 +32,7 @@ define('BBR_DBPASSWORD', '');
  * Database name.
  * Название базы
  */
-define('BBR_DATABASE', 'hs');
+define('BBR_DATABASE', 'hs2');
 
 ///////////////////////////////////////////////////////////////
 //                       NOT TO CHANGE

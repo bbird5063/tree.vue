@@ -1,15 +1,20 @@
 <template>
 	<div class="about">
 		<h1>This is an tree page</h1>
-		<tree-catalog :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree" :sourceContent="sourceContent"></tree-catalog>
+		<tree-catalog @loadContent="loadContent" :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree"
+			:sourceContent="sourceContent">
+		</tree-catalog>
+		<tree-content :rowsContent="rowsContent"></tree-content>
 	</div>
 </template>
 
 <script>
-import TreeCatalog from '@/components/TreeCatalog';//
+import TreeCatalog from '@/components/TreeCatalog';
+import TreeContent from '@/components/TreeContent';
 export default {
 	components: {
 		TreeCatalog,
+		TreeContent,
 	},
 	data() {
 		return {
@@ -89,12 +94,21 @@ export default {
 				],
 			},
 
+			rowsContent: {},
+
 		}
 	},
+
 	methods: {
 		test() {
 			alert('test()');
 		},
+
+		loadContent(rowsContent) {
+			this.rowsContent = rowsContent;
+			console.log('====loadContent(rowsContent)=========================');
+			console.log(rowsContent);
+		}
 	}
 }
 </script>
