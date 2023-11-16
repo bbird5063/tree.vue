@@ -24,6 +24,10 @@ export default {
 			type: Object,
 			required: true,
 		},
+		sourceContent: {
+			type: Object,
+			required: true,
+		},
 	},
 
 	data() {
@@ -48,6 +52,7 @@ export default {
 						if (this.treeHtmlCss.activeUnderline) elem.style.textDecoration = 'none';
 					}
 					if (clickedElem.id !== 'rootName') {
+						this.loadContent(clickedElem.parentNode.id);
 						if (this.treeHtmlCss.activeBold) clickedElem.style.fontWeight = 700;
 						if (this.treeHtmlCss.activeColor) clickedElem.style.color = this.treeHtmlCss.activeColor;
 						if (this.treeHtmlCss.activeUnderline) clickedElem.style.textDecoration = 'underline';
@@ -137,6 +142,21 @@ export default {
 			}
 		},
 
+		async loadContent(id) {
+			try {
+				this.showLoading(true)
+				const url = '/php_modules/kantor/controller_content.php';
+				const response = await axios.get(url, { params: this.buildSQL(id) });
+				console.log('----SQL-----------');
+				console.log(response.data.sql);
+				//response.data && this.onLoaded(response.data.tree);
+			} catch (e) {
+				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
+			} finally {
+				this.showLoading(false);
+			}
+		},
+
 		nextLevelTree(node) {
 			//let ID_Table = node.id.slice(0, node.id.indexOf('-'));
 			let ID_Table = node.id.slice(0, node.id.indexOf('='));
@@ -154,6 +174,37 @@ export default {
 				}
 				this.currentTree = this.currentTree.childTable;
 			}
+		},
+
+		buildSQL(id) {
+			let
+				sqlQuery = 'SELECT ',
+				selectFields = '',
+				hooks = '',
+				leftJoin = '',
+				orderBy = '',
+				where = '\nWHERE ' + this.sourceContent.nameTable + '.' + id;
+
+			for (let key in this.sourceContent.nameFields) {
+				selectFields += ',' + this.sourceContent.nameTable + '.' + this.sourceContent.nameFields[key];
+			};
+
+			for (let key in this.sourceContent.childTables) {
+				for (let ind in this.sourceContent.childTables[key].nameFields) {
+					selectFields += ',' + this.sourceContent.childTables[key].nameTable + '.' + this.sourceContent.childTables[key].nameFields[ind];
+					orderBy += ',' + this.sourceContent.childTables[key].nameTable + '.' + this.sourceContent.childTables[key].indexField;
+				}
+
+				hooks += '(';
+				leftJoin += ' \nLEFT JOIN ' + this.sourceContent.childTables[key].nameTable + ' ON ' + this.sourceContent.nameTable + '.' + this.sourceContent.childTables[key].idField + '=' + this.sourceContent.childTables[key].nameTable + '.' + this.sourceContent.childTables[key].idField + ')';
+			};
+
+			selectFields = selectFields.substr(1);
+			orderBy = orderBy.substr(1);
+			sqlQuery += selectFields + ' \nFROM ' + hooks + ' ' + this.sourceContent.nameTable + leftJoin + ' ' + where + ' \nORDER BY ' + orderBy + ';';
+
+			console.log(sqlQuery);
+			return { sqlQuery };
 		},
 	},
 

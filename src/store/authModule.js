@@ -45,7 +45,7 @@ export const authModule = {
 				const response = await axios.post('/php_modules/auth/controller_update.php');
 				console.log('==response.data.user_data===========================');
 				console.log(response.data.user_data);
-				console.log(response.data);
+				console.log(response.data); // если нет - вся страница: "<!doctype html>...</html>"
 				if (response.data.user_data) {
 					commit('setDataUser', response.data.user_data);
 				}

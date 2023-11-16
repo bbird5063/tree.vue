@@ -1,38 +1,78 @@
-//import { slice } from "core-js/core/array";
-
-sourceTree = {
-	nameTable: 'credit',
-	idField: 'Credit',
-	nameField: 'NameCredit',
-	indexField: 'UserIndex',
-	childTable: {
-		nameTable: 'typepayment',
-		idField: 'ID_TypePayment',
-		nameField: 'NameTypePayment',
-		indexField: 'UserIndex',
-		childTable: {
-			nameTable: 'subtypepayment',
-			idField: 'ID_SubTypePayment',
-			nameField: 'NameSubTypePayment',
+const sourceContent = {
+	nameTable: 'DiaryBookPayment',
+	nameFields: [
+		'*'
+	],
+	indexField: '',
+	childTables: [
+		{
+			nameTable: 'DiaryBook',
+			idField: 'ID_DiaryBook',
+			nameFields: [
+				'DateDiaryBook'
+			],
+			indexField: 'DateDiaryBook',
+		},
+		{
+			nameTable: 'TypePayment',
+			idField: 'ID_TypePayment',
+			nameFields: [
+				'NameTypePayment'
+			],
 			indexField: 'UserIndex',
-		}
-	}
+		},
+		{
+			nameTable: 'SubTypePayment',
+			idField: 'ID_SubTypePayment',
+			nameFields: [
+				'NameSubTypePayment'
+			],
+			indexField: 'UserIndex',
+		},
+		{
+			nameTable: 'Cash',
+			idField: 'ID_Cash',
+			nameFields: [
+				'IsCash'
+			],
+			indexField: 'ID_Cash',
+		},
+		{
+			nameTable: 'Currency',
+			idField: 'ID_Currency',
+			nameFields: [
+				'NameCurrency'
+			],
+			indexField: 'ID_Currency',
+		},
+	],
 }
 
-//sourceTree.id = 11111;
-//console.log(sourceTree);
-//console.log('-----------------------');
-//sourceTree = sourceTree.childTable;
-//sourceTree.id = 22222;
-//console.log(sourceTree);
-//console.log('-----------------------');
-//sourceTree = sourceTree.childTable;
-//sourceTree.id = 33333;
-//console.log(sourceTree);
 
-let test = 'ID_TypePayment-12';
-//let pos = test.indexOf('=');
-//console.log(pos);
-//let test2 = test.slice(0, pos);
-let test2 = test.slice(0, test.indexOf('-'));
-console.log(test2);
+
+let
+	sqlQuery = 'SELECT ',
+	selectFields = '',
+	hooks = '',
+	leftJoin = '',
+	orderBy = '';
+
+for (let key in sourceContent.nameFields) {
+	selectFields += ',' + sourceContent.nameTable + '.' + sourceContent.nameFields[key];
+};
+
+for (let key in sourceContent.childTables) {
+	for (let ind in sourceContent.childTables[key].nameFields) {
+		selectFields += ',' + sourceContent.childTables[key].nameTable + '.' + sourceContent.childTables[key].nameFields[ind];
+		orderBy += ',' + sourceContent.childTables[key].nameTable + '.' + sourceContent.childTables[key].indexField;
+	}
+
+	hooks += '(';
+	leftJoin += ' \nLEFT JOIN ' + sourceContent.childTables[key].nameTable + ' ON ' + sourceContent.nameTable + '.' + sourceContent.childTables[key].idField + '=' + sourceContent.childTables[key].nameTable + '.' + sourceContent.childTables[key].idField + ')';
+};
+
+selectFields = selectFields.substr(1);
+orderBy = orderBy.substr(1);
+sqlQuery += selectFields + ' \nFROM ' + hooks + ' ' + sourceContent.nameTable + leftJoin + ' \nORDER BY ' + orderBy + ';';
+
+console.log(sqlQuery);
