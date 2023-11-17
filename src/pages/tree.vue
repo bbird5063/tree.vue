@@ -1,10 +1,16 @@
 <template>
-	<div class="about">
-		<h1>This is an tree page</h1>
-		<tree-catalog @loadContent="loadContent" :treeHtmlCss="treeHtmlCss" :sourceTree="sourceTree"
-			:sourceContent="sourceContent">
-		</tree-catalog>
-		<tree-content :rowsContent="rowsContent"></tree-content>
+	<div>
+		<h1 class="header">This is an tree page</h1>
+		<div class="flex-container">
+			<div class="sidebar">
+				<tree-catalog @loadContent="loadContent" :urlControllers="urlControllers" :treeHtmlCss="treeHtmlCss"
+					:sourceTree="sourceTree" :sourceContent="sourceContent">
+				</tree-catalog>
+			</div>
+			<div class="content">
+				<tree-content :rowsContent="rowsContent"></tree-content>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -18,6 +24,11 @@ export default {
 	},
 	data() {
 		return {
+			urlControllers: {
+				treeController: '/php_modules/kantor/controller_tree.php',
+				contentController: '/php_modules/kantor/controller_content.php',
+			},
+
 			treeHtmlCss: {
 				treeTitle: 'Период',
 				rootName: 'Все',
@@ -25,6 +36,7 @@ export default {
 				activeBold: true,
 				activeUnderline: true,
 			},
+
 			sourceTree: {
 				nameTable: 'credit',
 				idField: 'Credit',
@@ -113,4 +125,53 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+/* scoped*/
+.flex-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.container {
+	display: grid;
+	/* Шаблон и явно указать области */
+	grid-template-areas:
+		'header header'
+		/*шаблон для 1 строки и на 2 колонки разтянут */
+		'sidebar content';
+	/*шаблон для 2 строки: 1 колонка сайдбар, 2 колонка контент */
+	/* Сделаем отступы */
+	grid-gap: 10px;
+	/* Определим размеры */
+	grid-template-columns: 250px 1fr;
+	/* Теперь сайдбар будут статично всегда 150px, а контентная часть будет растягиваться в зависимости от размера экрана */
+
+	/* Шаблоны для строк */
+	grid-template-rows: 50px 1fr;
+	/* header стратичный 50px, 2 строка будет расширятья */
+
+}
+
+.item {
+	padding: 10px;
+	border: 1px solid black;
+}
+
+/* Названия для областей: */
+.header {
+	grid-area: header;
+	/* для названия области (безкавычек). Эти названия указаны в шаблоне выше */
+}
+
+.sidebar {
+	grid-area: sidebar;
+	align-self: start;
+	border-right: 1px solid grey;
+	/* Чтобы не растягиваться по высоте контента */
+}
+
+.content {
+	grid-area: content;
+}
+</style>

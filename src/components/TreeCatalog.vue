@@ -2,6 +2,7 @@
 	<div class="main">
 		{{ treeHtmlCss.treeTitle }}
 		<ul class="Container" id="tree">
+			<!-- ExpandOpen -->
 			<li id="root-" @click="tree" class="Node IsRoot IsLast ExpandClosed">
 				<div class="Expand"></div>
 				<div id="rootName" class="Content">{{ treeHtmlCss.rootName }}</div>
@@ -16,6 +17,10 @@
 import axios from 'axios';
 export default {
 	props: {
+		urlControllers: {
+			type: Object,
+			required: true,
+		},
 		treeHtmlCss: {
 			type: Object,
 			required: true,
@@ -52,6 +57,7 @@ export default {
 						if (this.treeHtmlCss.activeUnderline) elem.style.textDecoration = 'none';
 					}
 					if (clickedElem.id !== 'rootName') {
+						this.node = clickedElem.parentNode;
 						this.loadContent(clickedElem.parentNode.id);
 						if (this.treeHtmlCss.activeBold) clickedElem.style.fontWeight = 700;
 						if (this.treeHtmlCss.activeColor) clickedElem.style.color = this.treeHtmlCss.activeColor;
@@ -130,8 +136,8 @@ export default {
 		async load(node) {
 			try {
 				this.showLoading(true)
-				const url = '/php_modules/kantor/controller_tree.php';
-				const response = await axios.get(url, { params: this.currentTree });
+				//const url = '/php_modules/kantor/controller_tree.php';
+				const response = await axios.get(this.urlControllers.treeController, { params: this.currentTree });
 				console.log('----SQL-----------');
 				console.log(response.data.sql);
 				response.data && this.onLoaded(response.data.tree);
@@ -145,8 +151,8 @@ export default {
 		async loadContent(id) {
 			try {
 				this.showLoading(true)
-				const url = '/php_modules/kantor/controller_content.php';
-				const response = await axios.get(url, { params: this.buildSQL(id) });
+				//const url = '/php_modules/kantor/controller_content.php';
+				const response = await axios.get(this.urlControllers.contentController, { params: this.buildSQL(id) });
 				console.log('----SQL-----------');
 				if (response.data.errorDB) {
 					alert(response.data.errorDB);
@@ -228,6 +234,7 @@ export default {
 /* 'scoped' не ставить*/
 .main {
 	text-align: left;
+	padding: 10px;
 }
 
 .Container {
