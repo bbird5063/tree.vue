@@ -1,5 +1,5 @@
 <template>
-	<div class="main">
+	<div>
 		{{ treeHtmlCss.treeTitle }}
 		<ul class="Container" id="tree">
 			<!-- ExpandOpen -->
@@ -90,7 +90,7 @@ export default {
 
 			// загрузить узел
 			this.nextLevelTree(this.node);
-			console.log('----currentTree----');
+			console.log('----this.currentTree----');
 			console.table(this.currentTree);
 			this.load(this.node)
 		},
@@ -138,7 +138,7 @@ export default {
 				this.showLoading(true)
 				//const url = '/php_modules/kantor/controller_tree.php';
 				const response = await axios.get(this.urlControllers.treeController, { params: this.currentTree });
-				console.log('----SQL-----------');
+				console.log('----response.data.sql----');
 				console.log(response.data.sql);
 				response.data && this.onLoaded(response.data.tree);
 			} catch (e) {
@@ -151,20 +151,17 @@ export default {
 		async loadContent(id) {
 			try {
 				this.showLoading(true)
-				//const url = '/php_modules/kantor/controller_content.php';
 				const response = await axios.get(this.urlControllers.contentController, { params: this.buildSQL(id) });
-				console.log('----SQL-----------');
 				if (response.data.errorDB) {
 					alert(response.data.errorDB);
 				}
 				else {
+					console.log('----response.data.rowsContent----');
 					console.log(response.data.rowsContent);
-					this.$emit('loadContent', response.data.rowsContent);
+					response.data && this.$emit('loadContent', response.data.rowsContent);
 				}
+				console.log('----response.data----');
 				console.log(response.data);
-
-				//response.data && this.onLoaded(response.data.tree);
-
 			} catch (e) {
 				alert('Ошибка ' + e.name + ':' + e.message + '\n' + e.stack);
 			} finally {
@@ -217,7 +214,7 @@ export default {
 			selectFields = selectFields.substr(1);
 			orderBy = orderBy.substr(1);
 			sqlQuery += selectFields + ' \nFROM ' + hooks + ' ' + this.sourceContent.nameTable + leftJoin + ' ' + where + ' \nORDER BY ' + orderBy + ';';
-
+			console.log('----sqlQuery----');
 			console.log(sqlQuery);
 			return { sqlQuery };
 		},
@@ -232,11 +229,6 @@ export default {
 
 <style>
 /* 'scoped' не ставить*/
-.main {
-	text-align: left;
-	padding: 10px;
-}
-
 .Container {
 	padding: 0;
 	margin: 0;
