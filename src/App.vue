@@ -67,6 +67,7 @@ export default {
 	margin: 0;
 }
 
+/*
 table,
 td,
 th {
@@ -77,7 +78,7 @@ th {
 td {
 	padding: 5px;
 }
-
+*/
 .page__wrapper {
 	display: flex;
 	margin-top: 15px;
