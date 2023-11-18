@@ -3,9 +3,9 @@
 		<navbar @openModal="openModal"></navbar>
 		<div></div>
 		<div class="app">
-			<h2>authMode = {{ $store.state.auth.authMode }}</h2>
+			<!--h2>authMode = {{ $store.state.auth.authMode }}</h2>
 			<h3>ID(route) = {{ $route.params.id }}</h3>
-			<h3>ID(store) = {{ $store.state.auth.id }}</h3>
+			<h3>ID(store) = {{ $store.state.auth.id }}</h3-->
 			<!-- <router-view> - в него будут встраиваться компоненты из router.js -->
 			<router-view @openModal="openModal"></router-view>
 			<auth-form :nameModal="nameModal"></auth-form>
